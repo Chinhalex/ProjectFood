@@ -7,19 +7,27 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chinh.wherefoodapp.Adapter.MyCartAdapter;
 import com.chinh.wherefoodapp.Model.CartModel;
 import com.chinh.wherefoodapp.evenbus.MyUpdateCartEvent;
 import com.chinh.wherefoodapp.listener.ICartLoadListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.Nullable;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -41,8 +49,12 @@ public class CartActivity extends AppCompatActivity implements ICartLoadListener
     ImageView btnBack;
     @BindView(R.id.txtTotal)
     TextView txtTotal;
-
+    @BindView(R.id.btnConfirmPay)
+    Button btnConfirmPay;
     ICartLoadListener cartLoadListener;
+
+    private ArrayList<String> userSavedHistoryId;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onStart() {
@@ -69,15 +81,68 @@ public class CartActivity extends AppCompatActivity implements ICartLoadListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+
         initUI();
         loadCartFromFirebase();
+        getUserSavedLocations();
+
+
+    }
+
+    private void SavedHistoryFirebase( List<CartModel> cartModels) {
+        btnConfirmPay.setOnClickListener(v -> {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("History");
+            String key =  myRef.push().getKey();
+            myRef.child(key).setValue(cartModels, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                    saveUserHistory(key);
+
+                    FirebaseDatabase.getInstance()
+                            .getReference("Cart")
+                            .child("UNIQUE_ID").removeValue();
+                }
+            });
+        });
+
+    }
+    private void saveUserHistory(String key) {
+        userSavedHistoryId.add(key); //them id vao array list
+        Task<Void> databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+                .child(firebaseAuth.getUid()).child("History").setValue(userSavedHistoryId); //set id vao user -> saved locations
+
+    }
+
+    private void getUserSavedLocations() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+                .child(firebaseAuth.getUid()).child("History");
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String key= ds.getValue(String.class);
+                        userSavedHistoryId.add(key);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void loadCartFromFirebase() {
         List<CartModel> cartModels = new ArrayList<>();
+        userSavedHistoryId = new ArrayList<>();
         FirebaseDatabase.getInstance()
                 .getReference("Cart")
-                . child("Res1").child("IdListFoodOrdered")
+                .child("UNIQUE_ID")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -87,8 +152,12 @@ public class CartActivity extends AppCompatActivity implements ICartLoadListener
                                 CartModel cartModel = cartSnapshot.getValue(CartModel.class);
                                 cartModel.setKey(cartSnapshot.getKey());
                                 cartModels.add(cartModel);
+
                             }
                             cartLoadListener.onCartLoadSuccess(cartModels);
+
+                            SavedHistoryFirebase(cartModels);
+
                         }
                         else
                             cartLoadListener.onCartdLoadFailed("Cart empty");
@@ -111,6 +180,8 @@ public class CartActivity extends AppCompatActivity implements ICartLoadListener
         recyclerCart.addItemDecoration(new DividerItemDecoration(this,layoutManager.getOrientation()));
 
         btnBack.setOnClickListener(view -> finish());
+
+
     }
 
     @Override

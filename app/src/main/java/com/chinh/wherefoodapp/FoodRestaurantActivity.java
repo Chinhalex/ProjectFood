@@ -28,6 +28,8 @@ import com.chinh.wherefoodapp.evenbus.MyUpdateCartEvent;
 import com.chinh.wherefoodapp.listener.ICartLoadListener;
 import com.chinh.wherefoodapp.listener.IDrinkLoadListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,6 +63,7 @@ public class FoodRestaurantActivity extends AppCompatActivity implements IDrinkL
 
     IDrinkLoadListener drinkLoadListener;
     ICartLoadListener cartLoadListener;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onStart() {
@@ -179,7 +182,7 @@ drinkLoadListener.onDrindLoadFailed(error.getMessage());
         List<CartModel> cartModels = new ArrayList<>();
         FirebaseDatabase
                 .getInstance().getReference("Cart")
-                .child(chooseRestaurant()).child("IdListFoodOrdered")
+                .child("UNIQUE_ID")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
