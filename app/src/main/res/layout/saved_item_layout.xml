@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -12,7 +13,7 @@
             type="com.chinh.wherefoodapp.SavedLocationInterface" />
     </data>
 
-    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -68,17 +69,17 @@
 
             <Button
                 android:id="@+id/orderFood"
-                android:onClick="@{()->listener.onOrderClick(savedPlaceModel)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_below="@+id/txtPlaceAddress"
                 android:layout_centerInParent="true"
+                android:layout_marginTop="10dp"
                 android:layout_weight="0.5"
-                android:text="Order Food"
-                android:textSize="16dp"
                 android:backgroundTint="@color/orange"
-                android:radius="15dp" />
+                android:onClick="@{()->listener.onOrderClick(savedPlaceModel)}"
+                android:radius="15dp"
+                android:text="Order Food"
+                android:textSize="16dp" />
 
         </RelativeLayout>
 

@@ -83,7 +83,7 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.MyCartView
     private void deleteFromFirebase(CartModel cartModel) {
         FirebaseDatabase.getInstance()
                 .getReference("Cart")
-                .child("UNIQUE_USER_ID")
+                .child("Res1").child("IdListFoodOrdered")
                 .child(cartModel.getKey())
                 .removeValue()
                 .addOnSuccessListener(aVoid -> EventBus.getDefault().postSticky(new MyUpdateCartEvent()));
@@ -112,7 +112,7 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.MyCartView
     private void updateFirebase(CartModel cartModel) {
         FirebaseDatabase.getInstance()
                 .getReference("Cart")
-                .child("UNIQUE_USER_ID")
+                .child("Res1").child("IdListFoodOrdered")
                 .child(cartModel.getKey())
                 .setValue(cartModel)
                 .addOnSuccessListener(aVoid -> EventBus.getDefault().postSticky(new MyUpdateCartEvent()));

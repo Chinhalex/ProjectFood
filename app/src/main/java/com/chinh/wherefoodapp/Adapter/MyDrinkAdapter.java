@@ -42,6 +42,8 @@ public class MyDrinkAdapter extends RecyclerView.Adapter<MyDrinkAdapter.MyDrinkV
     private List<DrinkModel> drinkModelList;
     private ICartLoadListener iCartLoadListener;
 
+
+
     public MyDrinkAdapter(Context context, List<DrinkModel> drinkModelList, ICartLoadListener iCartLoadListener) {
         this.context = context;
         this.drinkModelList = drinkModelList;
@@ -71,7 +73,7 @@ public class MyDrinkAdapter extends RecyclerView.Adapter<MyDrinkAdapter.MyDrinkV
         DatabaseReference userCart = FirebaseDatabase
                 .getInstance()
                 .getReference("Cart")
-                .child("UNIQUE_USER_ID");
+                .child("Res1").child("IdListFoodOrdered");
 
         userCart.child(drinkModel.getKey())
                 .addListenerForSingleValueEvent(new ValueEventListener() {

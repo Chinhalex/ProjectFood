@@ -179,7 +179,7 @@ drinkLoadListener.onDrindLoadFailed(error.getMessage());
         List<CartModel> cartModels = new ArrayList<>();
         FirebaseDatabase
                 .getInstance().getReference("Cart")
-                .child("UNIQUE_USER_ID")
+                .child(chooseRestaurant()).child("IdListFoodOrdered")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

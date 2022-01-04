@@ -7,9 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -79,7 +77,7 @@ public class CartActivity extends AppCompatActivity implements ICartLoadListener
         List<CartModel> cartModels = new ArrayList<>();
         FirebaseDatabase.getInstance()
                 .getReference("Cart")
-                .child("UNIQUE_USER_ID")
+                . child("Res1").child("IdListFoodOrdered")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

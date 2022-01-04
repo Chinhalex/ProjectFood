@@ -19,11 +19,21 @@
             android:id="@+id/action_btnSetting_to_emailConfirmationFragment"
             app:destination="@id/emailConfirmationFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/btnSavedPlaces"
         android:name="com.chinh.wherefoodapp.Fragments.SavedPlacesFragment"
         android:label="Saved places"
         tools:layout="@layout/fragment_saved_places" />
+    <fragment
+        android:id="@+id/btnSavedOrders"
+        android:name="com.chinh.wherefoodapp.Fragments.OrderHistoryFragment"
+        android:label="OrderHistory"
+        tools:layout="@layout/fragment_order_history" >
+        <action
+            android:id="@+id/action_btnSavedOrders_to_ordersInfomationFragment"
+            app:destination="@id/ordersInfomationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/emailChangeFragment"
         android:name="com.chinh.wherefoodapp.Fragments.EmailChangeFragment"
@@ -54,4 +64,10 @@
             app:destination="@id/emailChangeFragment"
             app:popUpTo="@id/btnSetting" />
     </fragment>
+    <fragment
+        android:id="@+id/ordersInfomationFragment"
+        android:name="com.chinh.wherefoodapp.Fragments.OrdersInfomationFragment"
+        android:label="fragment_orders_infomation"
+        tools:layout="@layout/fragment_orders_infomation" />
+
 </navigation>

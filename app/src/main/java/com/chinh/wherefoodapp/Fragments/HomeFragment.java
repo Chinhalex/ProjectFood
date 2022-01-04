@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -183,7 +184,7 @@ public class HomeFragment<onOrderFoodClick> extends Fragment implements OnMapRea
             }
         });
 
-
+     //   ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Home");
         return binding.getRoot();
 
     }
@@ -626,13 +627,16 @@ public class HomeFragment<onOrderFoodClick> extends Fragment implements OnMapRea
 
     }
 
+
+    //set users saved location
     private void saveUserLocation(String placeId) {
 
-        userSavedLocationId.add(placeId);
-        userLocationReference.setValue(userSavedLocationId);
+        userSavedLocationId.add(placeId); //them id vao array list
+        userLocationReference.setValue(userSavedLocationId); //set id vao user -> saved locations
         Snackbar.make(binding.getRoot(), "Place Saved", Snackbar.LENGTH_LONG).show();
     }
 
+    //set places database
     private void saveLocation(SavedPlaceModel savedPlaceModel) {
         locationReference.child(savedPlaceModel.getPlaceId()).setValue(savedPlaceModel);
     }
