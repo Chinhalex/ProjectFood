@@ -1,5 +1,7 @@
 package com.chinh.wherefoodapp;
 
+import static org.greenrobot.eventbus.EventBus.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -89,13 +91,22 @@ public class FoodRestaurantActivity extends AppCompatActivity implements IDrinkL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_restaurant);
 
-        init();
-
         nameRes = getIntent().getStringExtra("name");
-        Log.d("TAG", "getPlaces: "+nameRes);
+
+        chooseRestaurant();
+
+        init();
 
         loadDrinkFromFireabas();
         countCartItem();
+    }
+
+    public String chooseRestaurant() {
+        if(nameRes.equalsIgnoreCase("quán phở Hoàng") == true) return "Res1";
+        else if(nameRes.equalsIgnoreCase("quán ăn mạnh quý") ==true) return "Res2";
+        else if(nameRes.equalsIgnoreCase("nhà hàng ẩm thực 316") == true) return "Res3";
+        else if(nameRes.equalsIgnoreCase("quán chay đóa sen vàng") == true) return "Res4";
+        return null;
     }
 
     private void loadDrinkFromFireabas() {
@@ -119,18 +130,12 @@ public class FoodRestaurantActivity extends AppCompatActivity implements IDrinkL
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-drinkLoadListener.onDrindLoadFailed(error.getMessage());
+                        drinkLoadListener.onDrindLoadFailed(error.getMessage());
                     }
                 });
     }
 
-    private String chooseRestaurant() {
-        if(nameRes.equalsIgnoreCase("quán phở Hoàng") == true) return "Res1";
-        else if(nameRes.equalsIgnoreCase("quán ăn mạnh quý") ==true) return "Res2";
-        else if(nameRes.equalsIgnoreCase("nhà hàng ẩm thực 316") == true) return "Res3";
-        else if(nameRes.equalsIgnoreCase("quán chay đóa sen vàng") == true) return "Res4";
-        return null;
-    }
+
 
 
     private void init(){
@@ -143,7 +148,14 @@ drinkLoadListener.onDrindLoadFailed(error.getMessage());
         recycler_drink.setLayoutManager(gridLayoutManager);
         recycler_drink.addItemDecoration(new SpaceItemDecoration());
 
-        btnCart.setOnClickListener(v -> startActivity(new Intent(this, CartActivity.class)));
+        btnCart.setOnClickListener(v ->{
+                    Intent intent  = new Intent(this, CartActivity.class);
+                    intent.putExtra("name", nameRes);
+                    startActivity(intent);
+            Log.d(TAG, "NAME RES: "+ nameRes );
+//            startActivity(new Intent(this, CartActivity.class));
+                } );
+
 
         btnBack.setOnClickListener(v->finish());
     }

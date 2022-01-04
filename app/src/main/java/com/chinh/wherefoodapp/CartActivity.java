@@ -8,12 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chinh.wherefoodapp.Adapter.MyCartAdapter;
 import com.chinh.wherefoodapp.Model.CartModel;
@@ -33,7 +31,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -52,6 +53,7 @@ public class CartActivity extends AppCompatActivity implements ICartLoadListener
     @BindView(R.id.btnConfirmPay)
     Button btnConfirmPay;
     ICartLoadListener cartLoadListener;
+    private String nameRes;
 
     private ArrayList<String> userSavedHistoryId;
     private FirebaseAuth firebaseAuth;
@@ -83,21 +85,36 @@ public class CartActivity extends AppCompatActivity implements ICartLoadListener
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        nameRes = getIntent().getStringExtra("name");
+
         initUI();
         loadCartFromFirebase();
         getUserSavedLocations();
 
 
+
+
+    }
+
+    private String getTimeNow()
+    {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy_HH:mm:ss");
+        Date date = new Date();
+        return formatter.format(date);
     }
 
     private void SavedHistoryFirebase( List<CartModel> cartModels) {
+
+        ResandTime resandTime = new ResandTime(nameRes, getTimeNow(),cartModels);
+
         btnConfirmPay.setOnClickListener(v -> {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("History");
             String key =  myRef.push().getKey();
-            myRef.child(key).setValue(cartModels, new DatabaseReference.CompletionListener() {
+            myRef.child(key).setValue(resandTime,  new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+
                     saveUserHistory(key);
 
                     FirebaseDatabase.getInstance()

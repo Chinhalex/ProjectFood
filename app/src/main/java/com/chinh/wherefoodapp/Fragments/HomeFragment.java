@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.chinh.wherefoodapp.Adapter.GooglePlaceAdapter;
 import com.chinh.wherefoodapp.Adapter.InfoWindowAdapter;
+import com.chinh.wherefoodapp.CartActivity;
 import com.chinh.wherefoodapp.Constant.AllConstant;
 import com.chinh.wherefoodapp.DirectionActivity;
 import com.chinh.wherefoodapp.FoodRestaurantActivity;
@@ -342,16 +343,6 @@ public class HomeFragment<onOrderFoodClick> extends Fragment implements OnMapRea
                 infoWindowAdapter = new InfoWindowAdapter(currentLocation, requireContext());
                 mGoogleMap.setInfoWindowAdapter(infoWindowAdapter);
                 moveCameraToLocation(location);
-//
-//                MarkerOptions markerOptions = new MarkerOptions()
-//                        .position(new LatLng(location.getLatitude(), location.getLongitude()))
-//                        .title("Current Location");
-//                //zoom map
-//                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new
-//                        LatLng(location.getLatitude(), location.getLongitude()), 17));
-//
-//                //add marker on map
-//                mGoogleMap.addMarker(markerOptions);
 
 
             }
@@ -578,8 +569,6 @@ public class HomeFragment<onOrderFoodClick> extends Fragment implements OnMapRea
                         saveLocation(savedPlaceModel);
                     }
 
-//, googlePlaceModel.getRating(),
-//                            googlePlaceModel.getUserRatingsTotal(),
 
                     saveUserLocation(googlePlaceModel.getPlaceId());
 
@@ -682,20 +671,16 @@ public class HomeFragment<onOrderFoodClick> extends Fragment implements OnMapRea
     @Override
     public void onOrderClick(GooglePlaceModel googlePlaceModel){
         if (googlePlaceModel.getGeometry().getLocation().getLat() != null && googlePlaceModel.getGeometry().getLocation().getLng() != null) {
+
             Intent intent = new Intent(requireContext(), FoodRestaurantActivity.class);
             intent.putExtra("name", googlePlaceModel.getName());
-
             startActivity(intent);
+
+
 
         } else {
             Toast.makeText(requireContext(), "Not Found", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void sendDatatoActivity() {
-
-
-//        intent.putExtra("address",googlePlaceModel.getVicinity());
     }
 
 
